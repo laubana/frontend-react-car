@@ -8,10 +8,10 @@ import OwnerCard from "../component/Card/OwnerCard";
 import { GET_OWNER } from "../service/graphql/ownerQuery";
 
 const DetailView = () => {
-  const { id } = useParams();
+  const { ownerId } = useParams();
 
   const { loading, data: ownerData } = useQuery(GET_OWNER, {
-    variables: { id: id },
+    variables: { ownerId },
   });
 
   return (
@@ -28,7 +28,7 @@ const DetailView = () => {
       <Flex style={{ padding: "12px 0", justifyContent: "center" }}>
         {!loading && ownerData.getOwner ? (
           <OwnerCard
-            id={id}
+            ownerId={ownerId}
             firstName={ownerData.getOwner.firstName}
             lastName={ownerData.getOwner.lastName}
             featured

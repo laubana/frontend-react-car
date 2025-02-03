@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { Button, Form, Input, Divider, InputNumber, Select } from "antd";
+import { useEffect, useState } from "react";
+
 import { ADD_CAR, GET_CARS } from "../../service/graphql/carQuery";
 import { GET_OWNERS } from "../../service/graphql/ownerQuery";
 
@@ -23,18 +24,18 @@ const AddCarView = () => {
         price: String(price),
         ownerId,
       },
-      update: (cache, { data: { addCar } }) => {
+      update: (cache, { data: { addCar: newCar } }) => {
         const oldQueries = cache.readQuery({
           query: GET_CARS,
-          variables: { ownerId: ownerId },
+          variables: { ownerId },
         });
 
         if (oldQueries) {
-          const oldCars = oldQueries.getCars;
+          const existingCars = oldQueries.getCars;
           cache.writeQuery({
             query: GET_CARS,
-            variables: { ownerId: ownerId },
-            data: { getCars: [...oldCars, addCar] },
+            variables: { ownerId },
+            data: { getCars: [...existingCars, newCar] },
           });
         }
       },
@@ -103,7 +104,7 @@ const AddCarView = () => {
             >
               <Select
                 options={ownersData.getOwners.map((owner) => ({
-                  value: owner.id,
+                  value: owner._id,
                   label: `${owner.firstName} ${owner.lastName}`,
                 }))}
                 style={{ width: "150px" }}

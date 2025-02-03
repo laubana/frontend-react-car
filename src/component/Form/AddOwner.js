@@ -1,7 +1,8 @@
 import { useMutation } from "@apollo/client";
 import { Button, Form, Input, Divider } from "antd";
-import { GET_OWNERS, ADD_OWNER } from "../../service/graphql/ownerQuery";
 import { useEffect, useState } from "react";
+
+import { GET_OWNERS, ADD_OWNER } from "../../service/graphql/ownerQuery";
 
 const AddOwnerView = () => {
   const [form] = Form.useForm();
@@ -18,14 +19,14 @@ const AddOwnerView = () => {
         firstName,
         lastName,
       },
-      update: (cache, { data: { addOwner } }) => {
+      update: (cache, { data: { addOwner: newOwner } }) => {
         const oldQueries = cache.readQuery({ query: GET_OWNERS });
 
         if (oldQueries) {
-          const oldOwners = oldQueries.getOwners;
+          const existingOwners = oldQueries.getOwners;
           cache.writeQuery({
             query: GET_OWNERS,
-            data: { getOwners: [...oldOwners, addOwner] },
+            data: { getOwners: [...existingOwners, newOwner] },
           });
         }
       },

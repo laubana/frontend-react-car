@@ -12,7 +12,7 @@ import {
 import { GET_OWNERS } from "../../service/graphql/ownerQuery";
 
 const CarCardView = (props) => {
-  const { id, year, make, model, price, ownerId } = props;
+  const { carId, year, make, model, price, ownerId } = props;
 
   const [isEditing, setIsEditing] = useState();
 
@@ -29,7 +29,7 @@ const CarCardView = (props) => {
     setIsEditing(false);
   };
 
-  const handleFinish = (values) => {
+  const handleUpdate = (values) => {
     const {
       year: newYear,
       make: newMake,
@@ -40,27 +40,27 @@ const CarCardView = (props) => {
 
     updateCar({
       variables: {
-        id,
+        carId,
         year: String(newYear),
         make: newMake,
         model: newModel,
         price: String(newPrice),
         ownerId: newOwnerId,
       },
-      update: (cache, { data: { updateCar } }) => {
+      update: (cache, { data: { updateCar: updatedCar } }) => {
         const oldQueries = cache.readQuery({
           query: GET_CARS,
-          variables: { ownerId: ownerId },
+          variables: { ownerId },
         });
 
         if (oldQueries) {
-          const oldCars = oldQueries.getCars;
+          const existingCars = oldQueries.getCars;
           cache.writeQuery({
             query: GET_CARS,
-            variables: { ownerId: ownerId },
+            variables: { ownerId },
             data: {
-              getCars: filter(oldCars, (car) => {
-                return car.id !== updateCar.id;
+              getCars: filter(existingCars, (existingCar) => {
+                return existingCar._id !== newOwnerId;
               }),
             },
           });
@@ -72,12 +72,12 @@ const CarCardView = (props) => {
         });
 
         if (newQueries) {
-          const newCars = newQueries.getCars;
+          const existingCars = newQueries.getCars;
           cache.writeQuery({
             query: GET_CARS,
             variables: { ownerId: newOwnerId },
             data: {
-              getCars: [...newCars, updateCar],
+              getCars: [...existingCars, updatedCar],
             },
           });
         }
@@ -90,25 +90,27 @@ const CarCardView = (props) => {
   const handleRemove = () => {
     removeCar({
       variables: {
-        id,
+        carId,
       },
-      update: (cache, { data: { removeCar } }) => {
-        const oldQueries = cache.readQuery({
-          query: GET_CARS,
-          variables: { ownerId: ownerId },
-        });
-
-        if (oldQueries) {
-          const oldCars = oldQueries.getCars;
-          cache.writeQuery({
+      update: (cache, { data: { removeCar: result } }) => {
+        if (result) {
+          const oldQueries = cache.readQuery({
             query: GET_CARS,
-            variables: { ownerId: ownerId },
-            data: {
-              getCars: filter(oldCars, (car) => {
-                return car.id !== removeCar.id;
-              }),
-            },
+            variables: { ownerId },
           });
+
+          if (oldQueries) {
+            const existingCars = oldQueries.getCars;
+            cache.writeQuery({
+              query: GET_CARS,
+              variables: { ownerId },
+              data: {
+                getCars: filter(existingCars, (existingCar) => {
+                  return existingCar._id !== carId;
+                }),
+              },
+            });
+          }
         }
       },
     });
@@ -139,7 +141,7 @@ const CarCardView = (props) => {
             layout="vertical"
             form={form}
             initialValues={{ year, make, model, price, ownerId }}
-            onFinish={handleFinish}
+            onFinish={handleUpdate}
           >
             <Form.Item
               label="Year"
@@ -193,7 +195,7 @@ const CarCardView = (props) => {
                 >
                   <Select
                     options={ownersData.getOwners.map((owner) => ({
-                      value: owner.id,
+                      value: owner._id,
                       label: `${owner.firstName} ${owner.lastName}`,
                     }))}
                     style={{ width: "150px" }}

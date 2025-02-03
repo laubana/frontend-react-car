@@ -1,14 +1,18 @@
 import { gql } from "@apollo/client";
 
 export const GET_CARS = gql`
-  query GetCars($ownerId: String!) {
+  query GetCars($ownerId: ID!) {
     getCars(ownerId: $ownerId) {
-      id
+      _id
       year
       make
       model
       price
-      ownerId
+      owner {
+        _id
+        firstName
+        lastName
+      }
     }
   }
 `;
@@ -19,7 +23,7 @@ export const ADD_CAR = gql`
     $make: String!
     $model: String!
     $price: String!
-    $ownerId: String!
+    $ownerId: ID!
   ) {
     addCar(
       year: $year
@@ -28,47 +32,53 @@ export const ADD_CAR = gql`
       price: $price
       ownerId: $ownerId
     ) {
-      id
+      _id
       year
       make
       model
       price
-      ownerId
+      owner {
+        _id
+        firstName
+        lastName
+      }
     }
   }
 `;
 
 export const REMOVE_CAR = gql`
-  mutation RemoveCar($id: String!) {
-    removeCar(id: $id) {
-      id
-    }
+  mutation RemoveCar($carId: ID!) {
+    removeCar(carId: $carId)
   }
 `;
 
 export const UPDATE_CAR = gql`
   mutation UpdateCar(
-    $id: String!
+    $carId: ID!
     $year: String!
     $make: String!
     $model: String!
     $price: String!
-    $ownerId: String!
+    $ownerId: ID!
   ) {
     updateCar(
-      id: $id
+      carId: $carId
       year: $year
       make: $make
       model: $model
       price: $price
       ownerId: $ownerId
     ) {
-      id
+      _id
       year
       make
       model
       price
-      ownerId
+      owner {
+        _id
+        firstName
+        lastName
+      }
     }
   }
 `;

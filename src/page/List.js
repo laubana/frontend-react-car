@@ -23,16 +23,19 @@ const ListView = () => {
         0 < ownersData.getOwners.length && <AddCar />}
       <Divider>Records</Divider>
       {!loading && (
-        <List style={{ display: "flex", justifyContent: "center" }}>
-          {ownersData &&
-            ownersData.getOwners &&
-            0 < ownersData.getOwners.length &&
-            ownersData.getOwners.map(({ id, firstName, lastName }) => (
-              <List.Item key={id}>
-                <OwnerCard id={id} firstName={firstName} lastName={lastName} />
-              </List.Item>
-            ))}
-        </List>
+        <List
+          dataSource={ownersData?.getOwners || []}
+          renderItem={({ _id, firstName, lastName }) => (
+            <List.Item key={_id}>
+              <OwnerCard
+                ownerId={_id}
+                firstName={firstName}
+                lastName={lastName}
+              />
+            </List.Item>
+          )}
+          style={{ display: "flex", justifyContent: "center" }}
+        />
       )}
     </div>
   );

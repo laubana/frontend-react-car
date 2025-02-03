@@ -16,7 +16,7 @@ import {
 } from "../../service/graphql/ownerQuery";
 
 const OwnerCardView = (props) => {
-  const { id, firstName, lastName, featured } = props;
+  const { ownerId, firstName, lastName, featured } = props;
 
   const navigate = useNavigate();
 
@@ -24,7 +24,7 @@ const OwnerCardView = (props) => {
 
   const [form] = Form.useForm();
   const { data: carsData } = useQuery(GET_CARS, {
-    variables: { ownerId: id },
+    variables: { ownerId },
   });
   const [updateOwner] = useMutation(UPDATE_OWNER);
   const [removeOwner] = useMutation(REMOVE_OWNER);
@@ -42,22 +42,22 @@ const OwnerCardView = (props) => {
 
     updateOwner({
       variables: {
-        id,
+        ownerId: ownerId,
         firstName: newFirstName,
         lastName: newLastName,
       },
-      update: (cache, { data: { updateOwner } }) => {
+      update: (cache, { data: { updateOwner: updatedOwner } }) => {
         const oldQuery = cache.readQuery({
           query: GET_OWNER,
-          variables: { id: id },
+          variables: { ownerId },
         });
 
         if (oldQuery) {
           cache.writeQuery({
             query: GET_OWNER,
-            variables: { id: id },
+            variables: { ownerId },
             data: {
-              getOwner: updateOwner,
+              getOwner: updatedOwner,
             },
           });
         }
@@ -65,13 +65,15 @@ const OwnerCardView = (props) => {
         const oldQueries = cache.readQuery({ query: GET_OWNERS });
 
         if (oldQueries) {
-          const oldOwners = oldQueries.getOwners;
+          const existingOwners = oldQueries.getOwners;
 
           cache.writeQuery({
             query: GET_OWNERS,
             data: {
-              getOwners: filter(oldOwners, (owner) => {
-                return owner.id !== updateOwner.id ? owner : updateOwner;
+              getOwners: filter(existingOwners, (existingOwner) => {
+                return existingOwner._id !== updatedOwner._id
+                  ? existingOwner
+                  : updatedOwner;
               }),
             },
           });
@@ -85,21 +87,23 @@ const OwnerCardView = (props) => {
   const handleRemove = () => {
     removeOwner({
       variables: {
-        id,
+        ownerId,
       },
-      update: (cache, { data: { removeOwner } }) => {
-        const oldQueries = cache.readQuery({ query: GET_OWNERS });
+      update: (cache, { data: { removeOwner: result } }) => {
+        if (result) {
+          const oldQueries = cache.readQuery({ query: GET_OWNERS });
 
-        if (oldQueries) {
-          const oldOwners = oldQueries.getOwners;
-          cache.writeQuery({
-            query: GET_OWNERS,
-            data: {
-              getOwners: filter(oldOwners, (owner) => {
-                return owner.id !== removeOwner.id;
-              }),
-            },
-          });
+          if (oldQueries) {
+            const existingOwners = oldQueries.getOwners;
+            cache.writeQuery({
+              query: GET_OWNERS,
+              data: {
+                getOwners: filter(existingOwners, (owner) => {
+                  return owner._id !== ownerId;
+                }),
+              },
+            });
+          }
         }
       },
     });
@@ -124,27 +128,23 @@ const OwnerCardView = (props) => {
           title={`${firstName} ${lastName}`}
           style={{ width: "1000px" }}
         >
-          <List style={{ display: "flex", justifyContent: "center" }}>
-            {carsData &&
-              carsData.getCars &&
-              0 < carsData.getCars.length &&
-              carsData.getCars.map(
-                ({ id, year, make, model, price, ownerId }) => (
-                  <List.Item key={id}>
-                    <CarCard
-                      id={id}
-                      year={year}
-                      make={make}
-                      model={model}
-                      price={price}
-                      ownerId={ownerId}
-                    />
-                  </List.Item>
-                )
-              )}
-          </List>
+          <List
+            dataSource={carsData?.getCars || []}
+            renderItem={({ _id, year, make, model, price, owner }) => (
+              <List.Item key={_id}>
+                <CarCard
+                  carId={_id}
+                  year={year}
+                  make={make}
+                  model={model}
+                  price={price}
+                  ownerId={owner._id}
+                />
+              </List.Item>
+            )}
+          />
           {!featured ? (
-            <Link to={`/${id}`}>Learn More</Link>
+            <Link to={`/${ownerId}`}>Learn More</Link>
           ) : (
             <Link to={`/`}>Go Back Home</Link>
           )}

@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+
 import ListView from "./page/List";
 import DetailView from "./page/Detail";
 
@@ -7,7 +8,7 @@ const App = () => {
     <Routes>
       <Route path="/">
         <Route index element={<ListView />} />
-        <Route path=":id" element={<DetailView />} />
+        <Route path=":ownerId" element={<DetailView />} />
       </Route>
     </Routes>
   );

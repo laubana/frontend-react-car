@@ -3,16 +3,16 @@ import { gql } from "@apollo/client";
 export const GET_OWNERS = gql`
   query GetOwners {
     getOwners {
-      id
+      _id
       firstName
       lastName
     }
   }
 `;
 export const GET_OWNER = gql`
-  query GetOwner($id: String!) {
-    getOwner(id: $id) {
-      id
+  query GetOwner($ownerId: ID!) {
+    getOwner(ownerId: $ownerId) {
+      _id
       firstName
       lastName
     }
@@ -22,7 +22,7 @@ export const GET_OWNER = gql`
 export const ADD_OWNER = gql`
   mutation AddOwner($firstName: String!, $lastName: String!) {
     addOwner(firstName: $firstName, lastName: $lastName) {
-      id
+      _id
       firstName
       lastName
     }
@@ -30,17 +30,15 @@ export const ADD_OWNER = gql`
 `;
 
 export const REMOVE_OWNER = gql`
-  mutation RemoveOwner($id: String!) {
-    removeOwner(id: $id) {
-      id
-    }
+  mutation RemoveOwner($ownerId: ID!) {
+    removeOwner(ownerId: $ownerId)
   }
 `;
 
 export const UPDATE_OWNER = gql`
-  mutation UpdateOwner($id: String!, $firstName: String!, $lastName: String!) {
-    updateOwner(id: $id, firstName: $firstName, lastName: $lastName) {
-      id
+  mutation UpdateOwner($ownerId: ID!, $firstName: String!, $lastName: String!) {
+    updateOwner(ownerId: $ownerId, firstName: $firstName, lastName: $lastName) {
+      _id
       firstName
       lastName
     }
