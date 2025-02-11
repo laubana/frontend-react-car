@@ -7,13 +7,13 @@ import { Link, useNavigate } from "react-router-dom";
 
 import CarCard from "./CarCard";
 
-import { GET_CARS } from "../../service/graphql/carQuery";
+import { GET_CARS } from "../../services/graphql/carQuery";
 import {
   GET_OWNER,
   GET_OWNERS,
   REMOVE_OWNER,
   UPDATE_OWNER,
-} from "../../service/graphql/ownerQuery";
+} from "../../services/graphql/ownerQuery";
 
 const OwnerCardView = (props) => {
   const { ownerId, firstName, lastName, featured } = props;

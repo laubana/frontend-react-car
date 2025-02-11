@@ -2,8 +2,8 @@ import { useMutation, useQuery } from "@apollo/client";
 import { Button, Form, Input, Divider, InputNumber, Select } from "antd";
 import { useEffect, useState } from "react";
 
-import { ADD_CAR, GET_CARS } from "../../service/graphql/carQuery";
-import { GET_OWNERS } from "../../service/graphql/ownerQuery";
+import { ADD_CAR, GET_CARS } from "../../services/graphql/carQuery";
+import { GET_OWNERS } from "../../services/graphql/ownerQuery";
 
 const AddCarView = () => {
   const [form] = Form.useForm();

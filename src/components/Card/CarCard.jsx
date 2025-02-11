@@ -8,8 +8,8 @@ import {
   GET_CARS,
   REMOVE_CAR,
   UPDATE_CAR,
-} from "../../service/graphql/carQuery";
-import { GET_OWNERS } from "../../service/graphql/ownerQuery";
+} from "../../services/graphql/carQuery";
+import { GET_OWNERS } from "../../services/graphql/ownerQuery";
 
 const CarCardView = (props) => {
   const { carId, year, make, model, price, ownerId } = props;

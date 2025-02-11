@@ -3,8 +3,9 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
-import App from "./App";
 import "./index.css";
+
+import App from "./App";
 
 const client = new ApolloClient({
   uri: `${process.env.REACT_APP_BACKEND_URL}/graphql`,

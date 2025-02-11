@@ -1,10 +1,10 @@
 import { useQuery } from "@apollo/client";
 import { Divider, List, Typography } from "antd";
 
-import AddCar from "../component/Form/AddCar";
-import AddOwner from "../component/Form/AddOwner";
-import OwnerCard from "../component/Card/OwnerCard";
-import { GET_OWNERS } from "../service/graphql/ownerQuery";
+import AddCar from "../components/Form/AddCar";
+import AddOwner from "../components/Form/AddOwner";
+import OwnerCard from "../components/Card/OwnerCard";
+import { GET_OWNERS } from "../services/graphql/ownerQuery";
 
 const ListView = () => {
   const { loading, data: ownersData } = useQuery(GET_OWNERS);

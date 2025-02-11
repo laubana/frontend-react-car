@@ -2,7 +2,7 @@ import { useMutation } from "@apollo/client";
 import { Button, Form, Input, Divider } from "antd";
 import { useEffect, useState } from "react";
 
-import { GET_OWNERS, ADD_OWNER } from "../../service/graphql/ownerQuery";
+import { GET_OWNERS, ADD_OWNER } from "../../services/graphql/ownerQuery";
 
 const AddOwnerView = () => {
   const [form] = Form.useForm();

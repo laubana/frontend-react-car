@@ -2,10 +2,10 @@ import { useQuery } from "@apollo/client";
 import { Divider, Flex, Typography, Empty } from "antd";
 import { useParams } from "react-router-dom";
 
-import AddCar from "../component/Form/AddCar";
-import AddOwner from "../component/Form/AddOwner";
-import OwnerCard from "../component/Card/OwnerCard";
-import { GET_OWNER } from "../service/graphql/ownerQuery";
+import AddCar from "../components/Form/AddCar";
+import AddOwner from "../components/Form/AddOwner";
+import OwnerCard from "../components/Card/OwnerCard";
+import { GET_OWNER } from "../services/graphql/ownerQuery";
 
 const DetailView = () => {
   const { ownerId } = useParams();

@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 
-import ListView from "./page/List";
-import DetailView from "./page/Detail";
+import ListView from "./pages/List";
+import DetailView from "./pages/Detail";
 
 const App = () => {
   return (
